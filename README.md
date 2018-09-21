@@ -63,6 +63,18 @@ ngprogress
 js-cookie
 vuex
 axios
+vue-i18n
+eventsource-polyfill
+webpack-hot-middleware
+webpack-dev-middleware
+
+@kazupon/vue-i18n-loader
+@types/node
+@vue/component-compiler-utils
+@webassemblyjs/ast
+express
+cheerio
+vue-loader
 ``` bash
 # install dependencies
 npm install

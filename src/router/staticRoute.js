@@ -82,15 +82,15 @@ const staticRoute = [
     component: Layout,
     children: [
       {
-        path:'table',
-        component: ()=>import(/* webpackChunkName: 'example' */ '../page/examples/table')
+        path: 'table',
+        component: () => import(/* webpackChunkName: 'example' */ '../page/examples/table')
       },
       {
-        path:'charts',
-        component: ()=>import(/* webpackChunkName: 'example' */ '../page/examples/charts')
-      },{
-        path:'map',
-        component: ()=>import(/* webpackChunkName: 'example' */ '../page/examples/map')
+        path: 'charts',
+        component: () => import(/* webpackChunkName: 'example' */ '../page/examples/charts')
+      }, {
+        path: 'map',
+        component: () => import(/* webpackChunkName: 'example' */ '../page/examples/map')
       },
     ]
   },
@@ -100,7 +100,7 @@ const staticRoute = [
     children: [
       {
         path: '',
-        component: ()=>import(/* webpackChunkName: 'i18n' */ '../page/i18n')
+        component: () => import(/* webpackChunkName: 'i18n' */ '../page/i18n')
       }
     ]
   },
@@ -110,12 +110,12 @@ const staticRoute = [
     children: [
       {
         path: '',
-        component: ()=>import(/* webpackChunkName: 'themeChange' */ '../page/themeChange')
+        component: () => import(/* webpackChunkName: 'themeChange' */ '../page/themeChange')
       }
     ]
   },
   {
-    path:'*',
+    path: '*',
     redirect: '/error/404'
   }
 ]
