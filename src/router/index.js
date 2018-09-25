@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
+//页面渲染的进度条
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import {Message} from 'element-ui'
@@ -8,30 +9,34 @@ import store from '../store'
 import staticRoute from './staticRoute'
 import whiteList from './whiteList'
 
-Vue.use(Router)
-
 var permissionList = []
 
-function initRoute (router) {
+function initRoute(router){
   return new Promise(resolve => {
-    if (permissionList.length == 0) {
-      console.log('没有权限数据，正在获取')
-      store.dispatch('auth/getNavList').then(() => {
-        store.dispatch('auth/getPermissionList').then(res => {
-          console.log('权限列表生成完毕')
+    if(permissionList.length == 0){
+      Message({
+        message:'没有权限数据，正在获取'
+      })
+      store.dispatch('auth/getNavList').then(()=>{
+        store.dispatch('auth/getPermissionList').then((res)=>{
+          Message({
+            message:'权限列表生成完毕'
+          })
           permissionList = res
-          res.forEach(function (v) {
+          res.forEach((v)=>{
             let routeItem = router.match(v.path)
-            if (routeItem) {
-              routeItem.meta.permission = v.permission ? v.permission : []
+            if (routeItem){
+              routeItem.meta.permission = v.permission?v.permission:[]
               routeItem.meta.name = v.name
             }
           })
           resolve()
         })
       })
-    } else {
-      console.log('已有权限数据')
+    }else {
+      Message({
+        message: '已有权限数据'
+      })
       resolve()
     }
   })
@@ -39,54 +44,60 @@ function initRoute (router) {
 
 NProgress.configure({showSpinner: false})
 
-const router = new Router({
-  mode: 'hash',
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode:'hash',
   routes: staticRoute
 })
 
-// 路由跳转前验证
-router.beforeEach((to, from, next) => {
-//  开启进度条
+//路由条赚钱验证
+
+router.beforeEach((to,from, next)=>{
   NProgress.start()
-  //  判断用户是否处于登录状态
-  //  debugger
-  if (Auth.isLogin()) {
-    //  如果当前处于登录状态，并且跳转地址为login，则自动跳回系统首页
-    //  这种情况出现在手动修改地址栏时
-    if (to.path === '/login') {
+  
+//  判断用户是否处于登录状态
+  if (Auth.isLogin()){
+    if (to.path == '/login'){
       next({path: '/home', replace: true})
-    } else if (to.path.indexOf('/error') >= 0) {
-      //  防止重定向到错误页面造成beforeEach死循环
+    }else if (to.path.indexOf('/error')>=0){
+      //防止重定向到错误页面造成死循环
       next()
     } else {
-      initRoute(router).then(() => {
+      initRoute(router).then(()=>{
         let isPermission = false
-        console.log('进入权限判断')
-        permissionList.forEach((v) => {
-          //  判断跳转的页面是否在权限列表中
-          if (v.path == to.fullPath) {
+        Message({
+          message: '进入权限判断'
+        })
+        permissionList.forEach((v)=>{
+        //  判断跳转页面是否在权限列表中
+          if (v.path == to.fullPath){
             isPermission = true
           }
         })
-        //  没有权限时跳转到401页面
-        if (!isPermission) {
+      //  没有权限时调到401页面
+        if(!isPermission){
           next({path: '/error/401', replace: true})
-        } else {
+        }else {
           next()
         }
       })
     }
-  } else {
-    //  如果是免登录得页面则直接进入，否则就跳转到登录页面
-    if (whiteList.indexOf(to.path) >= 0) {
-      console.log('该页面无需登录即可访问')
+  }else {
+  //  判断是否是免登录页面，如果是直接进去，不是跳到登录页
+    if (whiteList.indexOf(to.path)>=0){
+      Message({
+        message: '该页面无需登录即可访问'
+      })
       next()
     } else {
-      console.warn('当前处于未登录状态，请登录')
+      Message({
+        message: '当前处于未登录状态，请登录'
+      })
       next({path: '/login', replace: true})
-
-      //  如果store中没有token， 同时cookie中没有登录状态、
-      if (store.state.user.token) {
+    //  如果store中有token，同时cookie中没有登录状态
+      
+      if (store.state.user.token){
         Message({
           message: '登录超时，请重新登录'
         })
@@ -96,8 +107,8 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach(() => {
-  // 结束Progress
+//路由跳转完成后
+router.afterEach(()=>{
   NProgress.done()
 })
 

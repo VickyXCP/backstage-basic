@@ -1,24 +1,26 @@
-//注册全局组件
+// 组件全局注册
 import Vue from 'vue'
 
 import AppNotes from './AppNotes'
-import AppSearch from './AppSearch'
-import AppSection from './AppSection'
 import AppTitle from './AppTitle'
 import AppToolbar from './AppToolbar'
+import AppSection from './AppSection'
+import AppSearch from './AppSearch'
 import TableMixin from './TableMixin'
 
-const components = [
-  AppToolbar,
-  AppTitle,
-  AppSection,
-  AppSearch,
-  AppNotes,
-  TableMixin
+// 组件库
+const Components = [
+    AppNotes,
+    AppTitle,
+    AppToolbar,
+    AppSection,
+    AppSearch,
+    TableMixin
 ]
 
-components.map((component) => {
-  Vue.component(component.name, component)
+// 注册全局组件
+Components.map((com) =>{
+    Vue.component(com.name, com)
 })
 
 export default Vue
